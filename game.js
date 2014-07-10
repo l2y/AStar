@@ -64,10 +64,10 @@ gameAll.game = (function () {
         for (var i = 0; i < gameAll.width ; i=i+15)
             for (var j = 0 ; j < gameAll.height ; j=j+15)
                 ctx.fillRect(i,j,gameAll.pixelSize, gameAll.pixelSize);
-        player.render(ctx);
         wall.render(ctx);
         path.run(player.getX(), player.getY(), wall,ctx);
         path.render(ctx);
+        player.render(ctx);
 
         //setTimeout(gameLoop, gameAll.fps);
     }
@@ -177,9 +177,9 @@ gameAll.path = function() {
         //checked.push(current);
         
         while(end == false) {
-            if (current[0]+1 > 0 && current[1] > 0)
+            if (current[0]+1 < gameAll.width/15 && current[1] > 0)
                 addCheck(current[0]+1,current[1], wall);
-            if (current[0] > 0 && current[1]+1 > 0)
+            if (current[0] > 0 && current[1]+1 < gameAll.height/15)
                 addCheck(current[0],current[1]+1, wall);
             if (current[0]-1 > 0 && current[1] > 0)
                 addCheck(current[0]-1,current[1], wall);
@@ -202,13 +202,11 @@ gameAll.path = function() {
             }
             add(lowest);
 
-            //does nothing get added?
             checked.push(check);
             checked.push(current);
             current = lowest;
             console.log("Check Length: " + check.length + " Checked Length: " + checked.length + " Current: " + current);
-
-            if (current == new Array(endX, endY) || (check.length <= 0)) {
+            if ((check.length <= 0) || (current[0] == endX && current[1] == endY)) {
                 end = true;
             } 
             check = new Array();
@@ -242,7 +240,7 @@ gameAll.path = function() {
     }
     function render(ctx) {
         ctx.fillStyle='yellow';
-        for (var i = 0 ; i < pathCoordinates.length-1 ; i++) {
+        for (var i = 0 ; i < pathCoordinates.length - 1 ; i++) {
             ctx.fillRect(pathCoordinates[i][0]*15,pathCoordinates[i][1]*15,gameAll.pixelSize,gameAll.pixelSize);
         }
     }
